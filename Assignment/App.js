@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { Text, View, Button } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
@@ -8,16 +7,19 @@ import Profile from './screens/profile'
 import Contact from './screens/contact'
 import BlockedContacts from './screens/blockedContacts'
 import Login from './components/login'
+import SignUp from './components/signup';
+import { createStackNavigator } from '@react-navigation/stack';
 
-
-
+const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+  const [token, setToken] = React.useState(null);
 
-  function handleLogin() {
+  function handleLogin(token) {
     setIsLoggedIn(true);
+    setToken(token);
   }
 
   return (
@@ -30,7 +32,12 @@ export default function App() {
           <Tab.Screen name="Blocked" component={BlockedContacts} />
         </Tab.Navigator>
       ) : (
-        <Login onLogin={handleLogin} />
+        <Stack.Navigator>
+          <Stack.Screen name="Login">
+            {(props) => <Login {...props} onLogin={handleLogin} />}
+          </Stack.Screen>
+          <Stack.Screen name="SignUp" component={SignUp} />
+        </Stack.Navigator>
       )}
     </NavigationContainer>
   );

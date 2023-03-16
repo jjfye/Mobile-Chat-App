@@ -1,76 +1,70 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView, Linking } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView } from 'react-native';
 
 import * as EmailValidator from 'email-validator';
 
-export default class LoginScreen extends Component {
+export default class SignUp extends Component {
 
     constructor(props){
         super(props);
-    
+
         this.state = {
+            first_name: "",
+            last_name: "",
             email: "",
             password: "",
             error: "", 
             submitted: false
         }
-    
+
         this._onPressButton = this._onPressButton.bind(this)
     }
-    
+
     _onPressButton(){
         this.setState({submitted: true})
-    
-        if(!(this.state.email && this.state.password)){
-            this.setState({error: "Must enter email and password"})
-            return;
+      
+        if(!(this.state.first_name.trim() && this.state.last_name.trim() && this.state.email.trim() && this.state.password.trim())){
+          this.setState({error: "Must fill in fields!"})
+          return;
         }
-    
+      
         if(!EmailValidator.validate(this.state.email)){
-            this.setState({error: "Must enter valid email"})
-            return;
+          this.setState({error: "Must enter valid email"})
+          return;
         }
-    
+      
         const PASSWORD_REGEX = new RegExp("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$")
         if(!PASSWORD_REGEX.test(this.state.password)){
-            this.setState({error: "Password isn't strong enough (One upper, one lower, one special, one number, at least 8 characters long)"})
-            return;
+          this.setState({error: "Password isn't strong enough (One upper, one lower, one special, one number, at least 8 characters long)"})
+          return;
         }
-    
-        fetch('http://127.0.0.1:3333/api/1.0.0/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                email: this.state.email,
-                password: this.state.password
-            })
+      
+        const new_item = {
+          first_name: this.state.first_name,
+          last_name: this.state.last_name,
+          email: this.state.email,
+          password: this.state.password
+        };
+      
+        fetch('http://127.0.0.1:3333/api/1.0.0/user', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(new_item)
         })
         .then(response => response.json())
         .then(data => {
-            console.log('API response:', data);
-            // Handle the response from the API server
-            if(data.token) {
-                this.props.onLogin(data.token);
-            } else {
-                this.setState({ error: "Invalid email or password" });
-            }
+          console.log('API response:', data);
         })
         .catch(error => {
-            console.error('API error:', error);
-            // Handle the error from the API server
-            this.setState({ error: "Please try again" });
+          console.error('API error:', error);
         });
-    
-        console.log("Button clicked: " + this.state.email + " " + this.state.password)
+      
+        console.log("Button clicked: " + this.state.first_name + " " + this.state.last_name + " " + this.state.email + " " + this.state.password)
         console.log("Validated and ready to send to the API")
-    }
-    
-    _onSignUpPressed() {
-        this.props.navigation.navigate('SignUp');
-    }
-    
+      }
+      
 
     render(){
         return (
@@ -78,6 +72,38 @@ export default class LoginScreen extends Component {
                 <View style={styles.box}>
 
                 <View style={styles.formContainer}>
+                    <View style={styles.email}>
+                        <Text>First Name:</Text>
+                        <TextInput
+                            style={{height: 40, borderWidth: 1, width: "100%", backgroundColor: "white", borderRadius: 5, borderColor: "grey"}}
+                            placeholder="Enter First Name"
+                            onChangeText={first_name => this.setState({first_name})}
+                            defaultValue={this.state.first_name}
+                        />
+
+                        <>
+                            {this.state.submitted && !this.state.first_name &&
+                                <Text style={styles.error}>*first name is required</Text>
+                            }
+                        </>
+                    </View>
+                    
+                    <View style={styles.last_name}>
+                        <Text>Last Name:</Text>
+                        <TextInput
+                            style={{height: 40, borderWidth: 1, width: "100%", backgroundColor: "white", borderRadius: 5, borderColor: "grey"}}
+                            placeholder="Enter Last Name"
+                            onChangeText={last_name => this.setState({last_name})}
+                            defaultValue={this.state.last_name}
+                        />
+
+                        <>
+                            {this.state.submitted && !this.state.last_name &&
+                                <Text style={styles.error}>*Last Name is required</Text>
+                            }
+                        </>
+                    </View>
+
                     <View style={styles.email}>
                         <Text>Email:</Text>
                         <TextInput
@@ -111,10 +137,10 @@ export default class LoginScreen extends Component {
                         </>
                     </View>
             
-                    <View style={styles.loginbtn}>
+                    <View style={styles.signupBtn}>
                         <TouchableOpacity onPress={this._onPressButton}>
                             <View style={[styles.button,{width: "100%", height: "100%"}]}>
-                                <Text style={styles.buttonText}>Login</Text>
+                                <Text style={styles.buttonText}>Sign Up</Text>
                             </View>
                         </TouchableOpacity>
                     </View>
@@ -124,12 +150,6 @@ export default class LoginScreen extends Component {
                             <Text style={styles.error}>{this.state.error}</Text>
                         }
                     </>
-            
-                    <View>
-                    <TouchableOpacity onPress={() => this._onSignUpPressed()}>
-                        <Text style={styles.signup}>Need an account?</Text>
-                    </TouchableOpacity>
-                    </View>
                 </View>
             </View>
         </ScrollView>
@@ -175,7 +195,7 @@ const styles = StyleSheet.create({
     password:{
       marginBottom: 30
     },
-    loginbtn:{
+    signupBtn:{
         alignSelf: 'center',
         alignContent: 'center',
         backgroundColor: 'teal',

@@ -1,12 +1,15 @@
 import { StyleSheet, View, Text, Button,TouchableOpacity } from 'react-native';
 import React, { Component } from 'react';
 
+
 class Chats extends Component{
   static navigationOptions = {
     header: null
   };
 
   render(){
+    const navigation = this.props.navigation;
+
     return(
         <View style={styles.container}>
           <Text style={styles.text}>Chats</Text>
