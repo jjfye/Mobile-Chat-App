@@ -23,9 +23,10 @@ class Contact extends Component {
     })
       .then((response) => response.json())
       .then((responseJson) => {
+        console.log(responseJson); 
         this.setState({
           isLoading: false,
-          contacts: responseJson.contacts,
+          contacts: responseJson,
         });
       })
       .catch((error) => {
@@ -48,13 +49,13 @@ class Contact extends Component {
           data={this.state.contacts}
           renderItem={({ item }) => (
             <View style={{ padding: 10 }}>
-              <Text>ID: {item.id}</Text>
+              <Text>ID: {item.user_id}</Text>
               <Text>First Name: {item.first_name}</Text>
               <Text>Last Name: {item.last_name}</Text>
               <Text>Email: {item.email}</Text>
             </View>
           )}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item) => item.user_id.toString()}
         />
       </View>
     );
