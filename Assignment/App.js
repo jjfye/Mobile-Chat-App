@@ -28,8 +28,8 @@ export default function App() {
         <Tab.Navigator>
           <Tab.Screen name="Chats" component={Chats} />
           <Tab.Screen name="Contacts">
-  {() => <Contact token={token} />}
-</Tab.Screen>
+            {() => <Contact token={token} />}
+          </Tab.Screen>
           <Tab.Screen name="Profile" component={Profile} />
           <Tab.Screen name="Blocked" component={BlockedContacts} />
         </Tab.Navigator>
