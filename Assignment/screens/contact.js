@@ -136,28 +136,31 @@ class Contact extends Component {
           )}
           keyExtractor={(item) => item.user_id.toString()}
         />
+        <View style ={{ borderRadius: 5, borderColor: "black", margin: 40, borderWidth: 0.85}}>
+          <View style={{ padding: 10 }}>
+            <TextInput
+              style={{ height: 40, borderWidth: 1, width: "100%", backgroundColor: "white", borderRadius: 5, borderColor: "grey", padding: 5}}
+              onChangeText={(text) => this.setState({ user_id: text })}
+              value={user_id}
+              placeholder="Enter user ID"
+              keyboardType="numeric"
+            />
 
-        <View style={{ padding: 10 }}>
-          <TextInput
-            style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
-            onChangeText={(text) => this.setState({ user_id: text })}
-            value={user_id}
-            placeholder="Enter user ID"
-            keyboardType="numeric"
-          />
+            {error && <Text style={{ color: 'red' }}>{error}</Text>}
 
-          {error && <Text style={{ color: 'red' }}>{error}</Text>}
-
-          <TouchableOpacity
-            style={styles.buttonContainer}
-            onPress={this._onPressButton}>
-            <Text style={styles.buttonText}>Add User</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.buttonContainer, { backgroundColor: 'red' }]}
-            onPress={this._onDeleteButtonPress}>
-            <Text style={styles.buttonText}>Delete User</Text>
-          </TouchableOpacity>
+            <View style ={{ flexDirection: "row", justifyContent: "center"}}>
+              <TouchableOpacity
+                style={styles.buttonContainer}
+                onPress={this._onPressButton}>
+                <Text style={styles.buttonText}>Add</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.buttonContainer, { backgroundColor: 'red' }]}
+                onPress={this._onDeleteButtonPress}>
+                <Text style={styles.buttonText}>Delete</Text>
+              </TouchableOpacity>
+            </View> 
+          </View>
 
           {/* <TouchableOpacity
             style={styles.buttonContainer}
@@ -183,12 +186,16 @@ const styles = StyleSheet.create({
     fontSize: 25,
   },
   buttonContainer: {
+    alignSelf: 'center',
+    alignContent: 'center',
     backgroundColor: '#222',
-    borderRadius: 5,
-    padding: 10,
+    width: "30%",
+    borderRadius: 10,
+    padding: 12,
     margin: 20,
   },
   buttonText: {
+    textAlign: "center",
     fontSize: 20,
     color: '#fff',
   },
