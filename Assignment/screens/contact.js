@@ -11,6 +11,7 @@ class Contact extends Component {
       contacts: [],
       user_id: '',
       error: '',
+      showBlocked: false,
     };
   }
 
@@ -42,6 +43,35 @@ class Contact extends Component {
         console.error(error);
       });
   };
+
+  //fetches for the list of data in blocked
+  fetchBlocked = () => {
+    this.setState({ isLoading: true });
+  
+    // Determine the correct endpoint based on showBlocked state
+    const endpoint = this.state.showBlocked
+      ? 'http://127.0.0.1:3333/api/1.0.0/contacts'
+      : 'http://127.0.0.1:3333/api/1.0.0/blocked';
+  
+    fetch(endpoint, {
+      headers: {
+        'X-Authorization': this.props.token,
+      },
+    })
+      .then((response) => response.json())
+      .then((responseJson) => {
+        console.log(responseJson);
+        this.setState({
+          isLoading: false,
+          contacts: responseJson,
+          showBlocked: !this.state.showBlocked, // Toggle showBlocked
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+  
 
   // Add function - adds in contacts using a given ID
   _onPressButton = () => {
@@ -124,6 +154,11 @@ class Contact extends Component {
     }
     return (
       <View style={{ flex: 1 }}>
+        <View style={styles.titleContainer}>
+          <Text style={styles.titleText}>
+            {this.state.showBlocked ? 'Blocked' : 'Contacts'}
+          </Text>
+        </View>
         <FlatList
           data={contacts}
           renderItem={({ item }) => (
@@ -150,20 +185,26 @@ class Contact extends Component {
 
             <View style ={{ flexDirection: "row", justifyContent: "center"}}>
               <TouchableOpacity
-                style={styles.buttonContainer}
+                style={styles.btnContainer}
                 onPress={this._onPressButton}>
                 <Text style={styles.buttonText}>Add</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[styles.buttonContainer, { backgroundColor: 'red' }]}
+                style={[styles.btnContainer, { backgroundColor: 'red' }]}
                 onPress={this._onDeleteButtonPress}>
                 <Text style={styles.buttonText}>Delete</Text>
               </TouchableOpacity>
             </View> 
+            <TouchableOpacity
+              style={[styles.btnContainer]}
+              onPress={this.fetchBlocked}>
+              <Text style={styles.buttonText}>{this.state.showBlocked ? 'Contacts' : 'Blocked'}</Text>
+            </TouchableOpacity>
+
           </View>
 
           {/* <TouchableOpacity
-            style={styles.buttonContainer}
+            style={styles.btnContainer}
             onPress={this.fetchContacts}>
             <Text style={styles.buttonText}>Refresh Contacts</Text>
           </TouchableOpacity> */}
@@ -185,11 +226,11 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 25,
   },
-  buttonContainer: {
+  btnContainer: {
     alignSelf: 'center',
     alignContent: 'center',
     backgroundColor: '#222',
-    width: "30%",
+    width: "37%",
     borderRadius: 10,
     padding: 12,
     margin: 20,
@@ -198,6 +239,17 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 20,
     color: '#fff',
+  },
+  titleContainer: {
+    alignItems: 'start',
+    justifyContent: 'center',
+    padding: 15,
+    backgroundColor: 'white',
+  },
+  titleText: {
+    color: 'black',
+    fontSize: 20,
+    fontWeight: 'bold',
   },
 });
 
