@@ -26,19 +26,19 @@ export default function App() {
     <NavigationContainer>
       {isLoggedIn ? (
         <Tab.Navigator>
-          <Tab.Screen name="Chats" component={Chats} />
-          <Tab.Screen name="Contacts">
+          <Tab.Screen name="Chats" component={Chats} options={{ headerShown: false }} />
+          <Tab.Screen name="Contacts" options={{ headerShown: false }}>
             {() => <Contact token={token} />}
           </Tab.Screen>
-          <Tab.Screen name="Profile" component={Profile} />
-          <Tab.Screen name="Blocked" component={BlockedContacts} />
+          <Tab.Screen name="Profile" component={Profile} options={{ headerShown: false }} />
+          {/* <Tab.Screen name="Blocked" component={BlockedContacts} options={{ headerShown: false }} /> */}
         </Tab.Navigator>
       ) : (
         <Stack.Navigator>
-          <Stack.Screen name="Login">
+          <Stack.Screen name="Login" options={{ headerShown: false }}>
             {(props) => <Login {...props} onLogin={handleLogin} />}
           </Stack.Screen>
-          <Stack.Screen name="SignUp" component={SignUp} />
+          <Stack.Screen name="SignUp" component={SignUp} options={{ headerShown: false }} />
         </Stack.Navigator>
       )}
     </NavigationContainer>
