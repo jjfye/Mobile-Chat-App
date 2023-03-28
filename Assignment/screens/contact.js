@@ -142,6 +142,75 @@ class Contact extends Component {
         this.setState({ error: 'Failed to delete contact!' });
       });
   };
+
+  // Add function - adds in contacts using a given ID
+  _onBlockButtonPress = () => {
+    const { user_id } = this.state;
+  
+    // checks if input box is empty
+    if (!user_id.trim()) {
+      this.setState({ error: 'Must fill in field!' });
+      return;
+    }
+
+    // Grabs the endpoint and sets it to POST method if input box isn't empty
+    fetch(`http://127.0.0.1:3333/api/1.0.0/user/${user_id}/block`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Authorization': this.props.token,
+      },
+    })
+      .then((response) => {
+        // adds user to contacts if response is true, outputs error if false.
+        if (response.ok) {
+          console.log('Successfully blocked contact with ID:', user_id);
+          this.setState({ user_id: '', error: '' });
+          // Re-renders the screen by updating it with the updated contacts.
+          return this.fetchContacts();
+        }else {
+          console.log('Failed to block contact with ID:', user_id);
+          this.setState({ error: 'Failed to block contact!' });
+        }
+      })
+      .catch((error) => {
+        console.error('API error:', error);
+        this.setState({ error: 'Failed to block contact!' });
+      });
+    console.log('block button clicked: ' + user_id);
+    console.log('Validated and ready to send to the API');
+  };
+
+  _onUnblockButtonPress = () => {
+    const { user_id } = this.state;
+    if (!user_id.trim()) {
+      this.setState({ error: 'Must fill in field!' });
+      return;
+    }
+    fetch(`http://127.0.0.1:3333/api/1.0.0/user/${user_id}/block`, {
+      method: 'DELETE',
+      headers: {
+        'X-Authorization': this.props.token,
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          console.log(`Successfully unblocked contact with ID: ${user_id}`);
+          this.setState((prevState) => ({
+            contacts: prevState.contacts.filter((c) => c.user_id !== parseInt(user_id)),
+            user_id: '',
+            error: '',
+          }));
+        } else {
+          console.error(`Failed to unblock contact with ID: ${user_id}`);
+          this.setState({ error: 'Failed to unblock contact!' });
+        }
+      })
+      .catch((error) => {
+        console.error('API error:', error);
+        this.setState({ error: 'Failed to unblock contact!' });
+      });
+  };
   
   render() {
     const { isLoading, contacts, user_id, error } = this.state;
@@ -171,7 +240,7 @@ class Contact extends Component {
           )}
           keyExtractor={(item) => item.user_id.toString()}
         />
-        <View style ={{ borderRadius: 5, borderColor: "black", margin: 40, borderWidth: 0.85}}>
+        <View style={{ borderRadius: 5, borderColor: "black", margin: 40, borderWidth: 0.85}}>
           <View style={{ padding: 10 }}>
             <TextInput
               style={{ height: 40, borderWidth: 1, width: "100%", backgroundColor: "white", borderRadius: 5, borderColor: "grey", padding: 5}}
@@ -183,7 +252,7 @@ class Contact extends Component {
 
             {error && <Text style={{ color: 'red' }}>{error}</Text>}
 
-            <View style ={{ flexDirection: "row", justifyContent: "center"}}>
+            <View style={{ flexDirection: "row", justifyContent: "center"}}>
               <TouchableOpacity
                 style={styles.btnContainer}
                 onPress={this._onPressButton}>
@@ -194,13 +263,26 @@ class Contact extends Component {
                 onPress={this._onDeleteButtonPress}>
                 <Text style={styles.buttonText}>Delete</Text>
               </TouchableOpacity>
+            </View>
+            <View style={{ flexDirection: "row", justifyContent: "center"}}>
+              <TouchableOpacity
+                style={[styles.btnContainer]}
+                onPress={this._onUnblockButtonPress}>
+                <Text style={styles.buttonText}>Unblock</Text>
+              </TouchableOpacity>
             </View> 
-            <TouchableOpacity
-              style={[styles.btnContainer]}
-              onPress={this.fetchBlocked}>
-              <Text style={styles.buttonText}>{this.state.showBlocked ? 'Contacts' : 'Blocked'}</Text>
-            </TouchableOpacity>
-
+            <View style={{ flexDirection: "row", justifyContent: "center"}}>
+              <TouchableOpacity
+                style={[styles.btnContainer]}
+                onPress={this.fetchBlocked}>
+                <Text style={styles.buttonText}>{this.state.showBlocked ? 'Contacts' : 'Blocked'}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                  style={[styles.btnContainer, { backgroundColor: 'red' }]}
+                  onPress={this._onBlockButtonPress}>
+                  <Text style={styles.buttonText}>Block</Text>
+              </TouchableOpacity>
+            </View>
           </View>
 
           {/* <TouchableOpacity

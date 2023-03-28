@@ -35,10 +35,10 @@ export default function App() {
         </Tab.Navigator>
       ) : (
         <Stack.Navigator>
-          <Stack.Screen name="Login" options={{ headerShown: false }}>
+          <Stack.Screen name="Login">
             {(props) => <Login {...props} onLogin={handleLogin} />}
           </Stack.Screen>
-          <Stack.Screen name="SignUp" component={SignUp} options={{ headerShown: false }} />
+          <Stack.Screen name="SignUp" component={SignUp} />
         </Stack.Navigator>
       )}
     </NavigationContainer>
