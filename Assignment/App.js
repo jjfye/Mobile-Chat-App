@@ -21,26 +21,36 @@ export default function App() {
     setIsLoggedIn(true);
     setToken(token);
   }
+  
+  function MainTabs() {
+    return (
+      <Tab.Navigator>
+        <Tab.Screen name="Chats" component={Chats} options={{ headerShown: false }} />
+        <Tab.Screen name="Contacts" options={{ headerShown: false }}>
+          {() => <Contact token={token} />}
+        </Tab.Screen>
+        <Tab.Screen name="Profile" options={{ headerShown: false }}>
+          {(props) => <Profile {...props} token={token} />}
+        </Tab.Screen>
+      </Tab.Navigator>
+    );
+  }
 
   return (
     <NavigationContainer>
-      {isLoggedIn ? (
-        <Tab.Navigator>
-          <Tab.Screen name="Chats" component={Chats} options={{ headerShown: false }} />
-          <Tab.Screen name="Contacts" options={{ headerShown: false }}>
-            {() => <Contact token={token} />}
-          </Tab.Screen>
-          <Tab.Screen name="Profile" component={Profile} options={{ headerShown: false }} />
-          {/* <Tab.Screen name="Blocked" component={BlockedContacts} options={{ headerShown: false }} /> */}
-        </Tab.Navigator>
-      ) : (
-        <Stack.Navigator>
-          <Stack.Screen name="Login">
-            {(props) => <Login {...props} onLogin={handleLogin} />}
-          </Stack.Screen>
-          <Stack.Screen name="SignUp" component={SignUp} />
-        </Stack.Navigator>
-      )}
+      <Stack.Navigator>
+        {isLoggedIn ? (
+          <Stack.Screen name="MainTabs" component={MainTabs} options={{ headerShown: false }} />
+        ) : (
+          <>
+            <Stack.Screen name="Login">
+              {(props) => <Login {...props} onLogin={handleLogin} />}
+            </Stack.Screen>
+            <Stack.Screen name="SignUp" component={SignUp} />
+          </>
+        )}
+      </Stack.Navigator>
     </NavigationContainer>
+
   );
 }
