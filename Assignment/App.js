@@ -25,7 +25,9 @@ export default function App() {
   function MainTabs() {
     return (
       <Tab.Navigator>
-        <Tab.Screen name="Chats" component={Chats} options={{ headerShown: false }} />
+        <Tab.Screen name="Chats" options={{ headerShown: false }}>
+          {() => <Chats token={token} />}
+        </Tab.Screen>
         <Tab.Screen name="Contacts" options={{ headerShown: false }}>
           {() => <Contact token={token} />}
         </Tab.Screen>
