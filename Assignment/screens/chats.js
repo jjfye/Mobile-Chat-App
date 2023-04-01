@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text, TouchableOpacity, FlatList } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, FlatList, TextInput } from 'react-native';
 import React, { Component } from 'react';
 import { ScrollView } from 'react-native-web';
 
@@ -9,6 +9,7 @@ class Chats extends Component {
     this.state = {
       isLoading: false,
       chats: [],
+      chatName: '',
       chatData: null,
     };
   }
@@ -75,7 +76,48 @@ class Chats extends Component {
       });
   };
   
+  _onAddChatButton = () => {
+    const { chatName } = this.state;
+    // Check if chatName is empty
+    if (!chatName.trim()) {
+      this.setState({ error: 'Please enter a name for the chat.' });
+      return;
+    }
 
+    const requestBody = {
+      name: chatName,
+    };
+  
+    // Send the POST request to add the chat
+    fetch('http://127.0.0.1:3333/api/1.0.0/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Authorization': this.props.token,
+      },
+      body: JSON.stringify(requestBody),
+    })
+      .then((response) => {
+        if (response.ok) {
+          console.log('Successfully added chat');
+          this.setState({ chatName: '', error: '' });
+          this.fetchChats();
+        } else {
+          console.log('Failed to add chat');
+          this.setState({ error: 'Failed to add chat!' });
+        }
+      })
+      .catch((error) => {
+        console.error('API error:', error);
+        this.setState({ error: 'Failed to add chat!' });
+      });
+
+    console.log('Button clicked');
+    console.log('Validated and ready to send to the API');
+
+  };
+  
+  
   render() {
     return (
       <View style={styles.container}>
@@ -88,7 +130,6 @@ class Chats extends Component {
               renderItem={({ item }) => (
                 <View style={styles.chatContainer}>
                   <TouchableOpacity
-                    style={styles.btnContainer}
                     onPress={() => this._onPressButton(item.chat_id)}>
                     <Text style={styles.chatName}>{item.name}</Text>
                     <Text style={styles.chatCreator}>
@@ -103,7 +144,7 @@ class Chats extends Component {
               keyExtractor={(item) => item.chat_id.toString()}
             />
             {this.state.chatData && (
-              <ScrollView>
+              <ScrollView style={{height:'250%'}}>
               <View style={styles.chatDataContainer}>
                 <Text style={styles.chatDataTitle}>{this.state.chatData.name}</Text>
                 <Text style={styles.chatDataCreator}>
@@ -130,12 +171,30 @@ class Chats extends Component {
               </View>
               </ScrollView>
             )}
+            <View style={{borderRadius: 5, borderColor: "black", width: '70%', marginTop: 50, borderWidth: 0.85}}>
+              <TextInput
+                style={{height: 40, borderWidth: 1, width: "100%", backgroundColor: "white", borderRadius: 5, borderColor: "grey", padding: 5}}
+                placeholder="Chat name"
+                onChangeText={(text) => this.setState({ chatName: text })}
+                value={this.state.chatName}
+              />
+              </View>
+              {this.state.error ? (
+                <Text style={{ color: 'red' }}>{this.state.error}</Text>
+              ) : null}
+              <View>
+              <TouchableOpacity
+                style={styles.btnContainer}
+                onPress={this._onAddChatButton}>
+                <Text style={styles.buttonText}>New Chat</Text>
+              </TouchableOpacity>
+            </View>
           </>
         )}
       </View>
     );
   }
-}
+}  
 
 
 const styles = StyleSheet.create({
@@ -201,6 +260,20 @@ const styles = StyleSheet.create({
   },
   chatDataMessage: {
     fontSize: 14,
+  },
+  btnContainer: {
+    alignSelf: 'center',
+    alignContent: 'center',
+    backgroundColor: '#222',
+    width: "80%",
+    borderRadius: 10,
+    padding: 12,
+    margin: 20,
+  },
+  buttonText: {
+    textAlign: "center",
+    fontSize: 20,
+    color: '#fff',
   },
 });
 
