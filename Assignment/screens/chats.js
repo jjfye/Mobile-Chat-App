@@ -12,6 +12,7 @@ class Chats extends Component {
       chatName: '',
       chatData: null,
       chatID: null,
+      user_id: '',
       newChatName: '',
     };
   }
@@ -20,7 +21,7 @@ class Chats extends Component {
     header: null,
   };
 
-  //fetches for the list of chat data
+  //Grabs list of chat data
   fetchChats = () => {
     if (!this.props.token) {
       console.log('Token is missing!');
@@ -163,6 +164,91 @@ class Chats extends Component {
     console.log('Validated and ready to send to the API');
   };  
   
+  _onAddUserChatButton = () => {
+    const { chatId, user_id } = this.state;
+    // check for empty inputs in chatId and newChatName
+    if (!chatId || !user_id.trim()) {
+      this.setState({ error: 'Please enter a chat ID and user ID for the chat.' });
+      return;
+    }
+  
+    const requestBody = {
+    };
+  
+    // Send the POST request to update the chat
+    fetch(`http://127.0.0.1:3333/api/1.0.0/chat/${chatId}/user/${user_id}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Authorization': this.props.token,
+      },
+      body: JSON.stringify(requestBody),
+    })
+      .then((response) => {
+        if (response.ok) {
+          console.log('Successfully added ${user_id} to chat');
+          this.setState({
+            chatId: null,
+            user_id: '',
+            error: '',
+          });
+          this.fetchChats();
+        } else {
+          console.log('Failed to update chat');
+          this.setState({ error: 'Failed to add user to chat!' });
+        }
+      })
+      .catch((error) => {
+        console.error('API error:', error);
+        this.setState({ error: 'Failed to to add user to chat!' });
+      });
+  
+    console.log('Button clicked');
+    console.log('Validated and ready to send to the API');
+  };  
+
+  _onDelUserChatButton = () => {
+    const { chatId, user_id } = this.state;
+    // check for empty inputs in chatId and newChatName
+    if (!chatId || !user_id.trim()) {
+      this.setState({ error: 'Please enter a chat ID and user ID for the chat.' });
+      return;
+    }
+  
+    const requestBody = {
+    };
+  
+    // Send the DELETE request to update the chat
+    fetch(`http://127.0.0.1:3333/api/1.0.0/chat/${chatId}/user/${user_id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Authorization': this.props.token,
+      },
+      body: JSON.stringify(requestBody),
+    })
+      .then((response) => {
+        if (response.ok) {
+          console.log('Successfully deleted ${user_id} to chat');
+          this.setState({
+            chatId: null,
+            user_id: '',
+            error: '',
+          });
+          this.fetchChats();
+        } else {
+          console.log('Failed to update chat');
+          this.setState({ error: 'Failed to delete user to chat!' });
+        }
+      })
+      .catch((error) => {
+        console.error('API error:', error);
+        this.setState({ error: 'Failed to  delete user to chat!' });
+      });
+  
+    console.log('Button clicked');
+    console.log('Validated and ready to send to the API');
+  };  
   
   render() {
     return (
@@ -223,9 +309,13 @@ class Chats extends Component {
               placeholder="Chat ID"
               onChangeText={(text) => this.setState({ chatId: text })}
               value={this.state.chatId}
-            />
-            </View>
-            <View style={{borderRadius: 5, borderColor: "black", width: '70%', marginTop: 20, borderWidth: 0.85}}>
+              />
+              <TextInput
+                style={{height: 40, borderWidth: 1, width: "100%", backgroundColor: "white", borderRadius: 5, borderColor: "grey", padding: 5}}
+                placeholder="User ID"
+                onChangeText={(text) => this.setState({ user_id: text })}
+                value={this.state.user_id}
+              />
               <TextInput
                 style={{height: 40, borderWidth: 1, width: "100%", backgroundColor: "white", borderRadius: 5, borderColor: "grey", padding: 5}}
                 placeholder="New chat name"
@@ -251,13 +341,25 @@ class Chats extends Component {
               {this.state.error ? (
                 <Text style={{ color: 'red' }}>{this.state.error}</Text>
               ) : null}
-              <View>
-              <TouchableOpacity
-                style={styles.btnContainer}
-                onPress={this._onAddChatButton}>
-                <Text style={styles.buttonText}>New Chat</Text>
-              </TouchableOpacity>
-            </View>
+              <View style={{ flexDirection: "row", justifyContent: "center"}}>
+                <TouchableOpacity
+                  style={styles.btnContainer}
+                  onPress={this._onAddChatButton}>
+                  <Text style={styles.buttonText}>New Chat</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.btnContainer}
+                  onPress={this._onAddUserChatButton}>
+                  <Text style={styles.buttonText}>Add to Chat</Text>
+                </TouchableOpacity>
+                </View>
+                <View style={{ flexDirection: "row", justifyContent: "center"}}>
+                <TouchableOpacity
+                  style={styles.btnContainer}
+                  onPress={this._onDelUserChatButton}>
+                  <Text style={styles.buttonText}>Delete from Chat</Text>
+                </TouchableOpacity>
+              </View>
           </>
         )}
       </View>
@@ -337,7 +439,7 @@ const styles = StyleSheet.create({
     width: "80%",
     borderRadius: 10,
     padding: 12,
-    margin: 20,
+    margin: 5,
   },
   buttonText: {
     textAlign: "center",
