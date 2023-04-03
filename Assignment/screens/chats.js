@@ -11,6 +11,8 @@ class Chats extends Component {
       chats: [],
       chatName: '',
       chatData: null,
+      chatID: null,
+      newChatName: '',
     };
   }
 
@@ -116,6 +118,50 @@ class Chats extends Component {
     console.log('Validated and ready to send to the API');
 
   };
+
+  _onUpdateChatButton = () => {
+    const { chatId, newChatName } = this.state;
+    // check for empty inputs in chatId and newChatName
+    if (!chatId || !newChatName.trim()) {
+      this.setState({ error: 'Please enter a chat ID and a name for the chat.' });
+      return;
+    }
+  
+    const requestBody = {
+      name: newChatName,
+    };
+  
+    // Send the PATCH request to update the chat
+    fetch(`http://127.0.0.1:3333/api/1.0.0/chat/${chatId}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Authorization': this.props.token,
+      },
+      body: JSON.stringify(requestBody),
+    })
+      .then((response) => {
+        if (response.ok) {
+          console.log('Successfully updated chat');
+          this.setState({
+            chatId: null,
+            newChatName: '',
+            error: '',
+          });
+          this.fetchChats();
+        } else {
+          console.log('Failed to update chat');
+          this.setState({ error: 'Failed to update chat!' });
+        }
+      })
+      .catch((error) => {
+        console.error('API error:', error);
+        this.setState({ error: 'Failed to update chat!' });
+      });
+  
+    console.log('Button clicked');
+    console.log('Validated and ready to send to the API');
+  };  
   
   
   render() {
@@ -171,6 +217,29 @@ class Chats extends Component {
               </View>
               </ScrollView>
             )}
+            <View style={{borderRadius: 5, borderColor: "black", width: '70%', marginTop: 50, borderWidth: 0.85}}>
+              <TextInput
+              style={{height: 40, borderWidth: 1, width: "100%", backgroundColor: "white", borderRadius: 5, borderColor: "grey", padding: 5}}
+              placeholder="Chat ID"
+              onChangeText={(text) => this.setState({ chatId: text })}
+              value={this.state.chatId}
+            />
+            </View>
+            <View style={{borderRadius: 5, borderColor: "black", width: '70%', marginTop: 20, borderWidth: 0.85}}>
+              <TextInput
+                style={{height: 40, borderWidth: 1, width: "100%", backgroundColor: "white", borderRadius: 5, borderColor: "grey", padding: 5}}
+                placeholder="New chat name"
+                onChangeText={(text) => this.setState({ newChatName: text })}
+                value={this.state.newChatName}
+              />
+            </View>
+            <View>
+              <TouchableOpacity
+                style={styles.btnContainer}
+                onPress={this._onUpdateChatButton}>
+                <Text style={styles.buttonText}>Update Chat</Text>
+              </TouchableOpacity>
+            </View>
             <View style={{borderRadius: 5, borderColor: "black", width: '70%', marginTop: 50, borderWidth: 0.85}}>
               <TextInput
                 style={{height: 40, borderWidth: 1, width: "100%", backgroundColor: "white", borderRadius: 5, borderColor: "grey", padding: 5}}
