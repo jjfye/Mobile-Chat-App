@@ -13,7 +13,7 @@ class Chats extends Component {
       chatData: null,
       chatID: null,
       user_id: '',
-      newChatName: '',
+      newChatName: '', 
       message: '',
     };
   }
@@ -61,6 +61,9 @@ class Chats extends Component {
       return;
     }
   
+    // Update the state with the clicked chatId
+    this.setState({ chatID: chatId });
+  
     fetch(`http://127.0.0.1:3333/api/1.0.0/chat/${chatId}`, {
       method: 'GET',
       headers: {
@@ -79,6 +82,7 @@ class Chats extends Component {
         console.error(error);
       });
   };
+  
   
   _onAddChatButton = () => {
     const { chatName } = this.state;
@@ -122,10 +126,10 @@ class Chats extends Component {
   };
 
   _onUpdateChatButton = () => {
-    const { chatId, newChatName } = this.state;
-    // check for empty inputs in chatId and newChatName
-    if (!chatId || !newChatName.trim()) {
-      this.setState({ error: 'Please enter a chat ID and a name for the chat.' });
+    const { chatID, newChatName } = this.state;
+    // check for empty inputs in newChatName
+    if (!newChatName.trim()) {
+      this.setState({ error: 'Please enter a name for the chat.' });
       return;
     }
   
@@ -134,7 +138,7 @@ class Chats extends Component {
     };
   
     // Send the PATCH request to update the chat
-    fetch(`http://127.0.0.1:3333/api/1.0.0/chat/${chatId}`, {
+    fetch(`http://127.0.0.1:3333/api/1.0.0/chat/${chatID}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -146,7 +150,6 @@ class Chats extends Component {
         if (response.ok) {
           console.log('Successfully updated chat');
           this.setState({
-            chatId: null,
             newChatName: '',
             error: '',
           });
@@ -166,10 +169,10 @@ class Chats extends Component {
   };  
   
   _onAddUserChatButton = () => {
-    const { chatId, user_id } = this.state;
-    // check for empty inputs in chatId and newChatName
-    if (!chatId || !user_id.trim()) {
-      this.setState({ error: 'Please enter a chat ID and user ID for the chat.' });
+    const { chatID, user_id } = this.state;
+    // check for empty input in newChatName
+    if (!user_id.trim()) {
+      this.setState({ error: 'Please enter a user ID for the chat.' });
       return;
     }
   
@@ -177,7 +180,7 @@ class Chats extends Component {
     };
   
     // Send the POST request to update the chat
-    fetch(`http://127.0.0.1:3333/api/1.0.0/chat/${chatId}/user/${user_id}`, {
+    fetch(`http://127.0.0.1:3333/api/1.0.0/chat/${chatID}/user/${user_id}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -189,7 +192,6 @@ class Chats extends Component {
         if (response.ok) {
           console.log('Successfully added ${user_id} to chat');
           this.setState({
-            chatId: null,
             user_id: '',
             error: '',
           });
@@ -209,10 +211,10 @@ class Chats extends Component {
   };  
 
   _onDelUserChatButton = () => {
-    const { chatId, user_id } = this.state;
-    // check for empty inputs in chatId and newChatName
-    if (!chatId || !user_id.trim()) {
-      this.setState({ error: 'Please enter a chat ID and user ID for the chat.' });
+    const { chatID, user_id } = this.state;
+    // check for empty input in newChatName
+    if (!user_id.trim()) {
+      this.setState({ error: 'Please enter a user ID for the chat.' });
       return;
     }
   
@@ -220,7 +222,7 @@ class Chats extends Component {
     };
   
     // Send the DELETE request to update the chat
-    fetch(`http://127.0.0.1:3333/api/1.0.0/chat/${chatId}/user/${user_id}`, {
+    fetch(`http://127.0.0.1:3333/api/1.0.0/chat/${chatID}/user/${user_id}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
@@ -232,7 +234,6 @@ class Chats extends Component {
         if (response.ok) {
           console.log('Successfully deleted ${user_id} to chat');
           this.setState({
-            chatId: null,
             user_id: '',
             error: '',
           });
@@ -253,10 +254,10 @@ class Chats extends Component {
 
 
   _onSendMsgButton = () => {
-    const { chatId, message } = this.state;
-    // check for empty inputs in chatId and message
-    if (!chatId || !message.trim()) {
-      this.setState({ error: 'Please enter a chat ID and message for the chat.' });
+    const { chatID, message } = this.state;
+    // check for empty input in  message
+    if (!message.trim()) {
+      this.setState({ error: 'Please enter a message for the chat.' });
       return;
     }
   
@@ -265,7 +266,7 @@ class Chats extends Component {
     };
   
     // Send the POST request to update the chat
-    fetch(`http://127.0.0.1:3333/api/1.0.0/chat/${chatId}/message`, {
+    fetch(`http://127.0.0.1:3333/api/1.0.0/chat/${chatID}/message`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -277,7 +278,6 @@ class Chats extends Component {
         if (response.ok) {
           console.log('Successfully sent message to chat');
           this.setState({
-            chatId: null,
             message: '',
             error: '',
           });
@@ -352,12 +352,12 @@ class Chats extends Component {
               </ScrollView>
             )}
             <View style={{borderRadius: 5, borderColor: "black", width: '70%', marginTop: 50, borderWidth: 0.85}}>
-              <TextInput
+              {/* <TextInput
               style={{height: 40, borderWidth: 1, width: "100%", backgroundColor: "white", borderRadius: 5, borderColor: "grey", padding: 5}}
               placeholder="Chat ID"
               onChangeText={(text) => this.setState({ chatId: text })}
               value={this.state.chatId}
-              />
+              /> */}
               <TextInput
                 style={{height: 40, borderWidth: 1, width: "100%", backgroundColor: "white", borderRadius: 5, borderColor: "grey", padding: 5}}
                 placeholder="User ID"
