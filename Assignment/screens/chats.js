@@ -14,6 +14,7 @@ class Chats extends Component {
       chatID: null,
       user_id: '',
       newChatName: '',
+      message: '',
     };
   }
 
@@ -249,6 +250,51 @@ class Chats extends Component {
     console.log('Button clicked');
     console.log('Validated and ready to send to the API');
   };  
+
+
+  _onSendMsgButton = () => {
+    const { chatId, message } = this.state;
+    // check for empty inputs in chatId and newChatName
+    if (!chatId || !message.trim()) {
+      this.setState({ error: 'Please enter a chat ID and message for the chat.' });
+      return;
+    }
+  
+    const requestBody = {
+      message: message,
+    };
+  
+    // Send the POST request to update the chat
+    fetch(`http://127.0.0.1:3333/api/1.0.0/chat/${chatId}/message`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Authorization': this.props.token,
+      },
+      body: JSON.stringify(requestBody),
+    })
+      .then((response) => {
+        if (response.ok) {
+          console.log('Successfully sent message to chat');
+          this.setState({
+            chatId: null,
+            message: '',
+            error: '',
+          });
+          this.fetchChats();
+        } else {
+          console.log('Failed to update chat');
+          this.setState({ error: 'Failed to send message to chat!' });
+        }
+      })
+      .catch((error) => {
+        console.error('API error:', error);
+        this.setState({ error: 'Failed to to send message to chat!' });
+      });
+  
+    console.log('Button clicked');
+    console.log('Validated and ready to send to the API');
+  };  
   
   render() {
     return (
@@ -322,6 +368,12 @@ class Chats extends Component {
                 onChangeText={(text) => this.setState({ newChatName: text })}
                 value={this.state.newChatName}
               />
+              <TextInput
+                style={{height: 40, borderWidth: 1, width: "100%", backgroundColor: "white", borderRadius: 5, borderColor: "grey", padding: 5}}
+                placeholder="Message"
+                onChangeText={(text) => this.setState({ message: text })}
+                value={this.state.message}
+              />
             </View>
             <View>
               <TouchableOpacity
@@ -358,6 +410,11 @@ class Chats extends Component {
                   style={styles.btnContainer}
                   onPress={this._onDelUserChatButton}>
                   <Text style={styles.buttonText}>Delete from Chat</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.btnContainer}
+                  onPress={this._onSendMsgButton}>
+                  <Text style={styles.buttonText}>Send Message</Text>
                 </TouchableOpacity>
               </View>
           </>
@@ -436,7 +493,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     alignContent: 'center',
     backgroundColor: '#222',
-    width: "80%",
+    width: "55%",
     borderRadius: 10,
     padding: 12,
     margin: 5,
