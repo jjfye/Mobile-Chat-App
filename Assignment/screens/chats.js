@@ -254,7 +254,7 @@ class Chats extends Component {
 
   _onSendMsgButton = () => {
     const { chatId, message } = this.state;
-    // check for empty inputs in chatId and newChatName
+    // check for empty inputs in chatId and message
     if (!chatId || !message.trim()) {
       this.setState({ error: 'Please enter a chat ID and message for the chat.' });
       return;
@@ -341,7 +341,9 @@ class Chats extends Component {
                   data={this.state.chatData.messages.reverse()}
                   renderItem={({ item }) => (
                     <View style={styles.chatDataMessageContainer}>
-                      <Text style={styles.chatDataMessage}>{item.author.first_name} {item.author.last_name}: {item.message}</Text>
+                      <Text style={styles.chatDataMessage}>
+                        {item.author.first_name} {item.author.last_name}: {item.message} [{new Date(item.timestamp).getHours().toString().padStart(2, '0')}:{new Date(item.timestamp).getMinutes().toString().padStart(2, '0')}]({item.message_id})
+                      </Text>
                     </View>
                   )}
                   keyExtractor={(item) => item.message_id.toString()}
