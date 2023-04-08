@@ -249,9 +249,9 @@ class Contact extends Component {
               placeholder="Enter user ID"
               keyboardType="numeric"
             />
-
+            
             {error && <Text style={{ color: 'red' }}>{error}</Text>}
-
+            
             <View style={{ flexDirection: "row", justifyContent: "center"}}>
               <TouchableOpacity
                 style={styles.btnContainer}

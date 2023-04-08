@@ -13,8 +13,11 @@ class Chats extends Component {
       chatData: null,
       chatID: null,
       user_id: '',
+      message_id: '',
       newChatName: '', 
       message: '',
+      showChatData: false,
+
     };
   }
 
@@ -59,6 +62,12 @@ class Chats extends Component {
     if (!chatId) {
       console.log('Chat ID is missing!');
       return;
+    }
+  
+    if (this.state.chatID === chatId) {
+      this.setState({ showChatData: !this.state.showChatData });
+    } else {
+      this.setState({ showChatData: true });
     }
   
     // Update the state with the clicked chatId
@@ -126,15 +135,15 @@ class Chats extends Component {
   };
 
   _onUpdateChatButton = () => {
-    const { chatID, newChatName } = this.state;
-    // check for empty inputs in newChatName
-    if (!newChatName.trim()) {
+    const { chatID, chatName } = this.state;
+    // check for empty inputs in ChatName
+    if (!chatName.trim()) {
       this.setState({ error: 'Please enter a name for the chat.' });
       return;
     }
   
     const requestBody = {
-      name: newChatName,
+      name: chatName,
     };
   
     // Send the PATCH request to update the chat
@@ -150,7 +159,7 @@ class Chats extends Component {
         if (response.ok) {
           console.log('Successfully updated chat');
           this.setState({
-            newChatName: '',
+            chatName: '',
             error: '',
           });
           this.fetchChats();
@@ -212,7 +221,7 @@ class Chats extends Component {
 
   _onDelUserChatButton = () => {
     const { chatID, user_id } = this.state;
-    // check for empty input in newChatName
+    // check for empty input in user_id
     if (!user_id.trim()) {
       this.setState({ error: 'Please enter a user ID for the chat.' });
       return;
@@ -295,6 +304,51 @@ class Chats extends Component {
     console.log('Button clicked');
     console.log('Validated and ready to send to the API');
   };  
+
+  _onUpdateMessage = () => {
+    const { chatID, message_id, message } = this.state;
+    // check for empty inputs in message
+    if (!message.trim()) {
+      this.setState({ error: 'Please enter a message.' });
+      return;
+    }
+  
+    const requestBody = {
+      message: message,
+    };
+  
+    // Send the PATCH request to update the chat
+    fetch(`http://127.0.0.1:3333/api/1.0.0/chat/${chatID}/message/${message_id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Authorization': this.props.token,
+      },
+      body: JSON.stringify(requestBody),
+    })
+      .then((response) => {
+        if (response.ok) {
+          console.log('Successfully updated chat');
+          this.setState({
+            message: '',
+            message_id: '',
+            error: '',
+          });
+          this.fetchChats();
+        } else {
+          console.log('Failed to update chat');
+          this.setState({ error: 'Failed to update chat!' });
+        }
+      })
+      .catch((error) => {
+        console.error('API error:', error);
+        this.setState({ error: 'Failed to update chat!' });
+      });
+  
+    console.log('Button clicked');
+    console.log('Validated and ready to send to the API');
+  };  
+  
   
   render() {
     return (
@@ -321,7 +375,7 @@ class Chats extends Component {
               )}
               keyExtractor={(item) => item.chat_id.toString()}
             />
-            {this.state.chatData && (
+            {this.state.chatData && this.state.showChatData && (
               <ScrollView style={{height:'250%'}}>
               <View style={styles.chatDataContainer}>
                 <Text style={styles.chatDataTitle}>{this.state.chatData.name}</Text>
@@ -351,7 +405,7 @@ class Chats extends Component {
               </View>
               </ScrollView>
             )}
-            <View style={{borderRadius: 5, borderColor: "black", width: '70%', marginTop: 50, borderWidth: 0.85}}>
+            <View style={{borderRadius: 5, borderColor: "black", marginTop: 50, borderWidth: 0.85}}>
               {/* <TextInput
               style={{height: 40, borderWidth: 1, width: "100%", backgroundColor: "white", borderRadius: 5, borderColor: "grey", padding: 5}}
               placeholder="Chat ID"
@@ -366,25 +420,10 @@ class Chats extends Component {
               />
               <TextInput
                 style={{height: 40, borderWidth: 1, width: "100%", backgroundColor: "white", borderRadius: 5, borderColor: "grey", padding: 5}}
-                placeholder="New chat name"
-                onChangeText={(text) => this.setState({ newChatName: text })}
-                value={this.state.newChatName}
+                placeholder="Message ID"
+                onChangeText={(text) => this.setState({ message_id: text })}
+                value={this.state.message_id}
               />
-              <TextInput
-                style={{height: 40, borderWidth: 1, width: "100%", backgroundColor: "white", borderRadius: 5, borderColor: "grey", padding: 5}}
-                placeholder="Message"
-                onChangeText={(text) => this.setState({ message: text })}
-                value={this.state.message}
-              />
-            </View>
-            <View>
-              <TouchableOpacity
-                style={styles.btnContainer}
-                onPress={this._onUpdateChatButton}>
-                <Text style={styles.buttonText}>Update Chat</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={{borderRadius: 5, borderColor: "black", width: '70%', marginTop: 50, borderWidth: 0.85}}>
               <TextInput
                 style={{height: 40, borderWidth: 1, width: "100%", backgroundColor: "white", borderRadius: 5, borderColor: "grey", padding: 5}}
                 placeholder="Chat name"
@@ -392,31 +431,56 @@ class Chats extends Component {
                 value={this.state.chatName}
               />
               </View>
+              <View style={{borderRadius: 5, borderColor: "black", marginTop: 50, flexDirection: "row", justifyContent: "center"}}>
+              <TextInput
+                style={{height: 40, borderWidth: 1, width: "100%", backgroundColor: "white", borderRadius: 5, borderColor: "grey", padding: 5, alignSelf: 'center',
+                alignContent: 'center',}}
+                placeholder="Message"
+                onChangeText={(text) => this.setState({ message: text })}
+                value={this.state.message}
+              />
+              <TouchableOpacity
+                  style={styles.btnContainer}
+                  onPress={this._onSendMsgButton}>
+                  <Text style={styles.buttonText}>Send</Text>
+              </TouchableOpacity>
+            </View>
               {this.state.error ? (
                 <Text style={{ color: 'red' }}>{this.state.error}</Text>
               ) : null}
               <View style={{ flexDirection: "row", justifyContent: "center"}}>
+              <TouchableOpacity
+                style={styles.btnContainer}
+                onPress={this._onUpdateChatButton}>
+                <Text style={styles.buttonText}>Update</Text>
+              </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.btnContainer}
                   onPress={this._onAddChatButton}>
-                  <Text style={styles.buttonText}>New Chat</Text>
+                  <Text style={styles.buttonText}>New</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.btnContainer}
                   onPress={this._onAddUserChatButton}>
-                  <Text style={styles.buttonText}>Add to Chat</Text>
+                  <Text style={styles.buttonText}>Add</Text>
                 </TouchableOpacity>
                 </View>
                 <View style={{ flexDirection: "row", justifyContent: "center"}}>
                 <TouchableOpacity
-                  style={styles.btnContainer}
+                  style={{alignSelf: 'center',
+                  alignContent: 'center',
+                  backgroundColor: '#222',
+                  width: 130,
+                  borderRadius: 10,
+                  padding: 12,
+                  margin: 5,}}
                   onPress={this._onDelUserChatButton}>
-                  <Text style={styles.buttonText}>Delete from Chat</Text>
+                  <Text style={styles.buttonText}>Remove</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.btnContainer}
-                  onPress={this._onSendMsgButton}>
-                  <Text style={styles.buttonText}>Send Message</Text>
+                  onPress={this._onUpdateMessage}>
+                  <Text style={styles.buttonText}>Update Message</Text>
                 </TouchableOpacity>
               </View>
           </>
@@ -495,7 +559,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     alignContent: 'center',
     backgroundColor: '#222',
-    width: "55%",
+    width: "40%",
     borderRadius: 10,
     padding: 12,
     margin: 5,

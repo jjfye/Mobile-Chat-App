@@ -68,7 +68,7 @@ export default class LoginScreen extends Component {
     }
     
     _onSignUpPressed() {
-        this.props.navigation.navigate('SignUp');
+        this.props.navigation.navigate('ChatDetails');
     }
     
 
