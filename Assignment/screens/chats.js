@@ -354,7 +354,88 @@ class Chats extends Component {
     return (
       <View style={styles.container}>
         {this.state.isLoading ? (
+          <>
           <Text>Loading...</Text>
+          <View style={{borderRadius: 5, borderColor: "black", marginTop: 50, borderWidth: 0.85}}>
+              {/* <TextInput
+              style={{height: 40, borderWidth: 1, width: "100%", backgroundColor: "white", borderRadius: 5, borderColor: "grey", padding: 5}}
+              placeholder="Chat ID"
+              onChangeText={(text) => this.setState({ chatId: text })}
+              value={this.state.chatId}
+              /> */}
+              <TextInput
+                style={{height: 40, borderWidth: 1, width: "100%", backgroundColor: "white", borderRadius: 5, borderColor: "grey", padding: 5}}
+                placeholder="User ID"
+                onChangeText={(text) => this.setState({ user_id: text })}
+                value={this.state.user_id}
+              />
+              <TextInput
+                style={{height: 40, borderWidth: 1, width: "100%", backgroundColor: "white", borderRadius: 5, borderColor: "grey", padding: 5}}
+                placeholder="Message ID"
+                onChangeText={(text) => this.setState({ message_id: text })}
+                value={this.state.message_id}
+              />
+              <TextInput
+                style={{height: 40, borderWidth: 1, width: "100%", backgroundColor: "white", borderRadius: 5, borderColor: "grey", padding: 5}}
+                placeholder="Chat name"
+                onChangeText={(text) => this.setState({ chatName: text })}
+                value={this.state.chatName}
+              />
+              </View>
+              <View style={{borderRadius: 5, borderColor: "black", marginTop: 50, flexDirection: "row", justifyContent: "center"}}>
+              <TextInput
+                style={{height: 40, borderWidth: 1, width: "100%", backgroundColor: "white", borderRadius: 5, borderColor: "grey", padding: 5, alignSelf: 'center',
+                alignContent: 'center',}}
+                placeholder="Message"
+                onChangeText={(text) => this.setState({ message: text })}
+                value={this.state.message}
+              />
+              <TouchableOpacity
+                  style={styles.btnContainer}
+                  onPress={this._onSendMsgButton}>
+                  <Text style={styles.buttonText}>Send</Text>
+              </TouchableOpacity>
+            </View>
+              {this.state.error ? (
+                <Text style={{ color: 'red' }}>{this.state.error}</Text>
+              ) : null}
+              <View style={{ flexDirection: "row", justifyContent: "center"}}>
+              <TouchableOpacity
+                style={styles.btnContainer}
+                onPress={this._onUpdateChatButton}>
+                <Text style={styles.buttonText}>Update</Text>
+              </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.btnContainer}
+                  onPress={this._onAddChatButton}>
+                  <Text style={styles.buttonText}>New</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.btnContainer}
+                  onPress={this._onAddUserChatButton}>
+                  <Text style={styles.buttonText}>Add</Text>
+                </TouchableOpacity>
+                </View>
+                <View style={{ flexDirection: "row", justifyContent: "center"}}>
+                <TouchableOpacity
+                  style={{alignSelf: 'center',
+                  alignContent: 'center',
+                  backgroundColor: '#222',
+                  width: 130,
+                  borderRadius: 10,
+                  padding: 12,
+                  margin: 5,}}
+                  onPress={this._onDelUserChatButton}>
+                  <Text style={styles.buttonText}>Remove</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.btnContainer}
+                  onPress={this._onUpdateMessage}>
+                  <Text style={styles.buttonText}>Update Message</Text>
+                </TouchableOpacity>
+              </View>
+          </>
+          
         ) : (
           <>
             <FlatList
