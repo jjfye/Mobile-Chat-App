@@ -348,6 +348,49 @@ class Chats extends Component {
     console.log('Button clicked');
     console.log('Validated and ready to send to the API');
   };  
+
+  _onDelMessageButton = () => {
+    const { message_id, chatID } = this.state;
+    // check for empty input in user_id
+    if (!message_id.trim()) {
+      this.setState({ error: 'Please enter a user ID for the chat.' });
+      return;
+    }
+  
+    const requestBody = {
+    };
+  
+    // Send the DELETE request to update the chat
+    fetch(`http://127.0.0.1:3333/api/1.0.0/chat/${chatID}/message/${message_id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Authorization': this.props.token,
+      },
+      body: JSON.stringify(requestBody),
+    })
+      .then((response) => {
+        if (response.ok) {
+          console.log('Successfully deleted ${message_id} to chat');
+          this.setState({
+            chatID: '',
+            message_id: '',
+            error: '',
+          });
+          this.fetchChats();
+        } else {
+          console.log('Failed to update chat');
+          this.setState({ error: 'Failed to delete message!' });
+        }
+      })
+      .catch((error) => {
+        console.error('API error:', error);
+        this.setState({ error: 'Failed to  delete message!' });
+      });
+  
+    console.log('Button clicked');
+    console.log('Validated and ready to send to the API');
+  };  
   
   
   render() {
@@ -562,6 +605,19 @@ class Chats extends Component {
                   style={styles.btnContainer}
                   onPress={this._onUpdateMessage}>
                   <Text style={styles.buttonText}>Update Message</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{
+                    alignSelf: 'center',
+                    alignContent: 'center',
+                    backgroundColor: '#222',
+                    width: "25%",
+                    borderRadius: 10,
+                    padding: 12,
+                    margin: 5,
+                  }}
+                  onPress={this._onDelMessageButton}>
+                  <Text style={styles.buttonText}>Delete</Text>
                 </TouchableOpacity>
               </View>
           </>
