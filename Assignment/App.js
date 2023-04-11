@@ -3,6 +3,7 @@
   import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
   import Chats from './screens/chats';
   import Profile from './screens/profile'
+  import Users from './screens/users'
   import Contact from './screens/contact'
   import Login from './components/login'
   import SignUp from './components/signup';
@@ -28,6 +29,9 @@
           </Tab.Screen>
           <Tab.Screen name="Contacts" options={{ headerShown: false }}>
             {() => <Contact token={token} />}
+          </Tab.Screen>
+          <Tab.Screen name="Users" options={{ headerShown: false }}>
+            {(props) => <Users {...props} token={token} />}
           </Tab.Screen>
           <Tab.Screen name="Profile" options={{ headerShown: false }}>
             {(props) => <Profile {...props} token={token} />}
