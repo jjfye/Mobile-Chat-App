@@ -485,17 +485,17 @@ class Chats extends Component {
               data={this.state.chats}
               renderItem={({ item }) => (
                 <View style={styles.chatContainer}>
-                  <TouchableOpacity
-                    onPress={() => this._onPressButton(item.chat_id)}>
-                    <Text style={styles.chatName}>{item.name}</Text>
-                    <Text style={styles.chatCreator}>
-                      Created by: {item.creator.first_name} {item.creator.last_name}
-                    </Text>
-                    <Text style={styles.chatMessage}>
-                      Last message: {item.last_message.message}
-                    </Text>
-                  </TouchableOpacity>
-                </View>
+                    <TouchableOpacity
+                      onPress={() => this._onPressButton(item.chat_id)}>
+                      <Text style={styles.chatName}>{item.name}</Text>
+                      <Text style={styles.chatCreator}>
+                        Created by: {item.creator.first_name} {item.creator.last_name}
+                      </Text>
+                      <Text style={styles.chatMessage}>
+                        Last message: {item.last_message.message}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
               )}
               keyExtractor={(item) => item.chat_id.toString()}
             />
@@ -691,6 +691,11 @@ const styles = StyleSheet.create({
   },
   chatDataMessage: {
     fontSize: 14,
+    borderWidth: 3,
+    borderColor: '#ccc',
+    borderRadius: 10,
+    padding: 5,
+    marginBottom: 5,
   },
   btnContainer: {
     alignSelf: 'center',
