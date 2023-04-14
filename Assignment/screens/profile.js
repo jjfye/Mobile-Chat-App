@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet} from 'react-native';
 import * as EmailValidator from 'email-validator';
+import * as ImagePicker from 'expo-image-picker';
+import { Image } from 'react-native';
 
 class Profile extends Component{
   constructor(props){
@@ -13,10 +15,18 @@ class Profile extends Component{
         password: "",
         error: "", 
         user_id: "",
-        submitted: false
+        submitted: false,
+        profile_image: null,
+
     }
     this._onUpdateInfo =this._onUpdateInfo.bind(this);
   }
+
+  async componentDidMount() {
+    const profile_image = await this._getProfilePicture(this.state.user_id);
+    this.setState({ profile_image });
+  }
+  
 
   _onUpdateInfo() {
     this.setState({ submitted: true });
@@ -112,17 +122,107 @@ class Profile extends Component{
     });
   }
 
+    _getProfilePicture = async (user_id) => {
+    try {
+      const response = await fetch(`http://127.0.0.1:3333/api/1.0.0/user/${user_id}/photo`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'image/jpeg, image/png',
+          'X-Authorization': this.props.token,
+        },
+        
+      });
+      
+      if (response.ok) {
+        console.log('Successfully got photo:', user_id);
+        const blob = await response.blob();
+        const imageUrl = URL.createObjectURL(blob);
+        return imageUrl;
+      } else {
+        console.log('Failed to get photo with ID:', user_id);
+        return null;
+      }
+    } catch (error) {
+      console.error('API error:', error);
+      return null;
+    }
+
+  };  
+
+  _uploadProfilePicture = async (user_id) => {
+    try {
+      const image = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 1,
+
+      });
+      if (image && !image.canceled) {
+    
+        const selectedImage = image.assets[0];
+        const fileExtension = selectedImage.uri.split('.').pop();
+        const contentType = fileExtension === 'png' ? 'image/png' : 'image/jpeg';
+        const blob = await (await fetch(selectedImage.uri)).blob();
+        const response = await fetch(`http://127.0.0.1:3333/api/1.0.0/user/${user_id}/photo`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': contentType,
+            'X-Authorization': this.props.token,
+
+          },
+          body: blob,
+
+        });
+
+        this.setState({ profile_image: selectedImage.uri });
   
+        if (response.ok) {
+          console.log('Successfully uploaded photo for user:', response);
+          this.setState({ profile_image: selectedImage.uri });
+          return true;
+          
+        } else {
+          console.log('Failed to upload photo for user with ID:', user_id);
+          const responseText = await response.text();
+          console.error("Error response:", response);
+          console.error("Response text:", responseText);
+          return false;
+
+        }
+      } else {
+        console.log('Cancelled image picker');
+        return false;
+      }
+
+    } catch (error) {
+      console.error('API error:', error);
+      return false;
+      
+    }
+
+  };
 
   render(){
     return (
-      <><View style={{ flexDirection: "row", justifyContent: "center" }}>
-        <TouchableOpacity
-          style={[styles.btnContainer]}
-          onPress={this._onLogOutButton}>
-          <Text style={styles.buttonText}>log out</Text>
+      <>
+      <View style={{ flexDirection: "row", justifyContent: "center" }}>
+        {this.state.profile_image ? (
+          <Image
+            source={{ uri: this.state.profile_image }}
+            style={{ width: 100, height: 100 }}
+          />
+        ) : (
+          <Text>No profile image</Text>
+        )}
+        <TouchableOpacity onPress={() => this._uploadProfilePicture(this.state.user_id)}>
+          <View style={[styles.btnContainer, { width: "100%", height: "100%" }]}>
+            <Text style={styles.buttonText}>Upload Profile Picture</Text>
+          </View>
         </TouchableOpacity>
-      </View><View style={{ flexDirection: "row", justifyContent: "center" }}>
+      </View>
+
+      <View style={{ flexDirection: "row", justifyContent: "center" }}>
           <View style={styles.box}>
             <View style={styles.formContainer}>
               <View style={styles.email}>
@@ -133,13 +233,11 @@ class Profile extends Component{
                     placeholder="Enter User ID"
                     onChangeText={user_id => this.setState({ user_id })}
                     defaultValue={this.state.user_id} />
-
                   <>
                     {this.state.submitted && !this.state.user_id &&
                       <Text style={styles.error}>*User ID is required</Text>}
                   </>
                 </View>
-
 
                 <Text>First Name:</Text>
                 <TextInput
@@ -196,6 +294,13 @@ class Profile extends Component{
                   </View>
                 </TouchableOpacity>
               </View>
+              <View style={{ flexDirection: "row", justifyContent: "center" }}>
+        <TouchableOpacity
+          style={[styles.btnContainer]}
+          onPress={this._onLogOutButton}>
+          <Text style={styles.buttonText}>log out</Text>
+        </TouchableOpacity>
+        </View>
 
               <>
 
@@ -287,9 +392,6 @@ const styles = StyleSheet.create({
   signup:{
     justifyContent: "center",
     textDecorationLine: "underline"
-  },
-  button: {
-
   },
   buttonText: {
     textAlign: 'center',
