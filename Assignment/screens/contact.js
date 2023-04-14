@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, FlatList, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, FlatList, TextInput, TouchableOpacity, Image } from 'react-native';
 
 class Contact extends Component {
   
@@ -19,36 +19,42 @@ class Contact extends Component {
     header: null,
   };
 
-  componentDidMount() {
-    this.fetchContacts();
+  async componentDidMount() {
+    await this.fetchContacts();
   }
-
-  //fetches for the list of data in contacts
-  fetchContacts = () => {
+  
+  fetchContacts = async () => {
     this.setState({ isLoading: true });
-    fetch('http://127.0.0.1:3333/api/1.0.0/contacts', {
-      headers: {
-        'X-Authorization': this.props.token,
-      },
-    })
-      .then((response) => response.json())
-      .then((responseJson) => {
-        console.log(responseJson);
-        this.setState({
-          isLoading: false,
-          contacts: responseJson,
-        });
-      })
-      .catch((error) => {
-        console.error(error);
+    try {
+      const response = await fetch('http://127.0.0.1:3333/api/1.0.0/contacts', {
+        headers: {
+          'X-Authorization': this.props.token,
+        },
       });
+      const responseJson = await response.json();
+      console.log(responseJson);
+      const contacts = await Promise.all(
+        responseJson.map(async (contact) => {
+          const photo = await this._getProfilePicture(contact.user_id);
+          return { ...contact, photo };
+        })
+      );
+      this.setState({
+        isLoading: false,
+        contacts,
+
+      });
+    } catch (error) {
+      console.error(error);
+    }
+
   };
 
   //fetches for the list of data in blocked
   fetchBlocked = () => {
     this.setState({ isLoading: true });
   
-    // Determine the correct endpoint based on showBlocked state
+    // Changes endpoints depending on showBlocked state
     const endpoint = this.state.showBlocked
       ? 'http://127.0.0.1:3333/api/1.0.0/contacts'
       : 'http://127.0.0.1:3333/api/1.0.0/blocked';
@@ -59,18 +65,29 @@ class Contact extends Component {
       },
     })
       .then((response) => response.json())
-      .then((responseJson) => {
+      .then(async (responseJson) => {
         console.log(responseJson);
+  
+        // Fetch profile pictures for the users
+        const contacts = await Promise.all(
+          responseJson.map(async (contact) => {
+            const photo = await this._getProfilePicture(contact.user_id);
+            return { ...contact, photo };
+          })
+        );
+  
         this.setState({
           isLoading: false,
-          contacts: responseJson,
-          showBlocked: !this.state.showBlocked, // Toggle showBlocked
+          contacts,
+          // Toggle showBlocked
+          showBlocked: !this.state.showBlocked, 
         });
       })
       .catch((error) => {
         console.error(error);
       });
   };
+  
   
 
   // Add function - adds in contacts using a given ID
@@ -166,6 +183,7 @@ class Contact extends Component {
         if (response.ok) {
           console.log('Successfully blocked contact with ID:', user_id);
           this.setState({ user_id: '', error: '' });
+          
           // Re-renders the screen by updating it with the updated contacts.
           return this.fetchContacts();
         }else {
@@ -200,17 +218,57 @@ class Contact extends Component {
             contacts: prevState.contacts.filter((c) => c.user_id !== parseInt(user_id)),
             user_id: '',
             error: '',
+
           }));
         } else {
           console.error(`Failed to unblock contact with ID: ${user_id}`);
           this.setState({ error: 'Failed to unblock contact!' });
+
         }
       })
       .catch((error) => {
         console.error('API error:', error);
         this.setState({ error: 'Failed to unblock contact!' });
+        
       });
+
   };
+
+
+  _getProfilePicture = async (user_id) => {
+    try {
+      const response = await fetch(`http://127.0.0.1:3333/api/1.0.0/user/${user_id}/photo`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'image/jpeg, image/png',
+          'X-Authorization': this.props.token,
+        },
+      });
+      if (response.ok) {
+        console.log('Successfully got photo:', user_id);
+        const blob = await response.blob();
+        const imageUrl = URL.createObjectURL(blob);
+
+        // Pass user ID to profile.js endpoint
+        await fetch(`http://127.0.0.1:3333/api/1.0.0/profile/${user_id}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Authorization': this.props.token,
+          },
+        });
+
+        return imageUrl;
+      } else {
+        console.log('Failed to get photo with ID:', user_id);
+        return null;
+      }
+    } catch (error) {
+      console.error('API error:', error);
+      return null;
+    }
+  };
+
   
   render() {
     const { isLoading, contacts, user_id, error } = this.state;
@@ -228,17 +286,28 @@ class Contact extends Component {
             {this.state.showBlocked ? 'Blocked' : 'Contacts'}
           </Text>
         </View>
-        <FlatList
-          data={contacts}
-          renderItem={({ item }) => (
+        <FlatList data={contacts} renderItem={({ item }) => {
+          return (
             <View style={{ padding: 10 }}>
-              <Text>ID: {item.user_id}</Text>
-              <Text>First Name: {item.first_name}</Text>
-              <Text>Last Name: {item.last_name}</Text>
-              <Text>Email: {item.email}</Text>
+              <View style={styles.btnContactsContainer}>
+                <View style={{ alignItems: "center"}}>
+                  {item.photo && (
+                    <Image
+                      source={{ uri: item.photo }}
+                      style={{ width: 100, height: 100, borderRadius: "50%"}}
+                    />
+                  )}
+                </View>
+                <Text>ID: {item.user_id}</Text>
+                <Text>First Name: {item.first_name}</Text>
+                <Text>Last Name: {item.last_name}</Text>
+                <Text>Email: {item.email}</Text>
+              </View>
             </View>
-          )}
-          keyExtractor={(item) => item.user_id.toString()}
+          );
+        }}
+        
+        keyExtractor={(item) => item.user_id.toString()}
         />
         <View style={{ borderRadius: 5, borderColor: "black", margin: 40, borderWidth: 0.85}}>
           <View style={{ padding: 10 }}>
@@ -316,6 +385,16 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 12,
     margin: 20,
+  },
+  btnContactsContainer: {
+    alignSelf: 'center',
+    alignContent: 'center',
+    backgroundColor: '#222',
+    width: "50%",
+    borderRadius: 10,
+    backgroundColor: "white",
+    padding: 12,
+    margin: 5,
   },
   buttonText: {
     textAlign: "center",
