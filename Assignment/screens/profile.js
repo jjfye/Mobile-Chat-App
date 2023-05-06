@@ -206,7 +206,8 @@ class Profile extends Component{
   render(){
     return (
       <>
-      <View style={{ flexDirection: "row", justifyContent: "center" }}>
+      <View style={{backgroundColor: 'lightblue'}}>
+      <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
         {this.state.profile_image ? (
           <Image
             source={{ uri: this.state.profile_image }}
@@ -215,11 +216,11 @@ class Profile extends Component{
         ) : (
           <Text>No profile image</Text>
         )}
+        <View style={[styles.btnContainer]}>
         <TouchableOpacity onPress={() => this._uploadProfilePicture(this.state.user_id)}>
-          <View style={[styles.btnContainer, { width: "100%", height: "100%" }]}>
-            <Text style={styles.buttonText}>Upload Profile Picture</Text>
-          </View>
+          <Text style={styles.buttonText}>Upload Profile Picture</Text>
         </TouchableOpacity>
+        </View>
       </View>
 
       <View style={{ flexDirection: "row", justifyContent: "center" }}>
@@ -249,7 +250,6 @@ class Profile extends Component{
                 <>
                 </>
               </View>
-
               <View style={styles.last_name}>
                 <Text>Last Name:</Text>
                 <TextInput
@@ -257,11 +257,9 @@ class Profile extends Component{
                   placeholder="Enter Last Name"
                   onChangeText={last_name => this.setState({ last_name })}
                   defaultValue={this.state.last_name} />
-
                 <>
                 </>
               </View>
-
               <View style={styles.email}>
                 <Text>Email:</Text>
                 <TextInput
@@ -269,11 +267,9 @@ class Profile extends Component{
                   placeholder="Enter email"
                   onChangeText={email => this.setState({ email })}
                   defaultValue={this.state.email} />
-
                 <>
                 </>
               </View>
-
               <View style={styles.password}>
                 <Text>Password:</Text>
                 <TextInput
@@ -282,7 +278,6 @@ class Profile extends Component{
                   onChangeText={password => this.setState({ password })}
                   defaultValue={this.state.password}
                   secureTextEntry />
-
                 <>
                 </>
               </View>
@@ -295,17 +290,18 @@ class Profile extends Component{
                 </TouchableOpacity>
               </View>
               <View style={{ flexDirection: "row", justifyContent: "center" }}>
-        <TouchableOpacity
-          style={[styles.btnContainer]}
-          onPress={this._onLogOutButton}>
-          <Text style={styles.buttonText}>log out</Text>
-        </TouchableOpacity>
-        </View>
+                <TouchableOpacity
+                  style={[styles.btnContainer, {width:"35%"}]}
+                  onPress={this._onLogOutButton}>
+                  <Text style={styles.buttonText}>log out</Text>
+                </TouchableOpacity>
+              </View>
 
               <>
 
               </>
             </View>
+          </View>
           </View>
         </View></> 
     );
@@ -323,9 +319,9 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     alignContent: 'center',
     backgroundColor: '#222',
-    width: "25%",
+    width: "50%",
     borderRadius: 10,
-    padding: 12,
+    padding: 8,
     margin: 20,
   },
   text: {

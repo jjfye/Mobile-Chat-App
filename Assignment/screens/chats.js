@@ -635,13 +635,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 10,
+    backgroundColor: "lightblue",
   },
   chatContainer: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#CAE9F5",
     borderRadius: 5,
     padding: 10,
     marginBottom: 10,
+    backgroundColor: "white",
   },
   chatName: {
     fontWeight: 'bold',
@@ -658,9 +660,10 @@ const styles = StyleSheet.create({
     width: 360,
     padding: 10,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: 'white',
     borderRadius: 5,
     marginBottom: 10,
+    backgroundColor: "#CAE9F5",
   },
   chatDataCreator: {
     fontStyle: 'italic',
@@ -672,6 +675,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 22,
     marginBottom: 5,
+    backgroundColor: "#CAE9F5",
+
   },
   chatDataMembersTitle: {
     fontWeight: 'bold',
@@ -687,15 +692,17 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   chatDataMessageContainer:{
-    marginBottom: 5,
+    marginBottom: 5,  
   },
   chatDataMessage: {
     fontSize: 14,
     borderWidth: 3,
-    borderColor: '#ccc',
+    borderColor: "lightblue",
     borderRadius: 10,
     padding: 5,
     marginBottom: 5,
+    backgroundColor: "white",
+
   },
   btnContainer: {
     alignSelf: 'center',

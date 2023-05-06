@@ -248,16 +248,6 @@ class Contact extends Component {
         console.log('Successfully got photo:', user_id);
         const blob = await response.blob();
         const imageUrl = URL.createObjectURL(blob);
-
-        // Pass user ID to profile.js endpoint
-        await fetch(`http://127.0.0.1:3333/api/1.0.0/profile/${user_id}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Authorization': this.props.token,
-          },
-        });
-
         return imageUrl;
       } else {
         console.log('Failed to get photo with ID:', user_id);
@@ -267,8 +257,8 @@ class Contact extends Component {
       console.error('API error:', error);
       return null;
     }
-  };
 
+  };  
   
   render() {
     const { isLoading, contacts, user_id, error } = this.state;
@@ -280,7 +270,7 @@ class Contact extends Component {
       );
     }
     return (
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, backgroundColor: "lightblue" }}>
         <View style={styles.titleContainer}>
           <Text style={styles.titleText}>
             {this.state.showBlocked ? 'Blocked' : 'Contacts'}
@@ -309,7 +299,7 @@ class Contact extends Component {
         
         keyExtractor={(item) => item.user_id.toString()}
         />
-        <View style={{ borderRadius: 5, borderColor: "black", margin: 40, borderWidth: 0.85}}>
+        <View style={{ borderRadius: 5, borderColor: "white", margin: 40, borderWidth: 0.85, backgroundColor: "#CAE9F5",}}>
           <View style={{ padding: 10 }}>
             <TextInput
               style={{ height: 40, borderWidth: 1, width: "100%", backgroundColor: "white", borderRadius: 5, borderColor: "grey", padding: 5}}
