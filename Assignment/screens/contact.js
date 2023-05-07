@@ -270,7 +270,7 @@ class Contact extends Component {
       );
     }
     return (
-      <View style={{ flex: 1, backgroundColor: "lightblue" }}>
+      <View style={{ flex: 1, backgroundColor: "lightblue"}}>
         <View style={styles.titleContainer}>
           <Text style={styles.titleText}>
             {this.state.showBlocked ? 'Blocked' : 'Contacts'}
@@ -278,9 +278,9 @@ class Contact extends Component {
         </View>
         <FlatList data={contacts} renderItem={({ item }) => {
           return (
-            <View style={{ padding: 10 }}>
+            <View style={{ padding: 10}}>
               <View style={styles.btnContactsContainer}>
-                <View style={{ alignItems: "center"}}>
+                <View style={{ alignItems: "center",}}>
                   {item.photo && (
                     <Image
                       source={{ uri: item.photo }}
@@ -299,7 +299,7 @@ class Contact extends Component {
         
         keyExtractor={(item) => item.user_id.toString()}
         />
-        <View style={{ borderRadius: 5, borderColor: "white", margin: 40, borderWidth: 0.85, backgroundColor: "#CAE9F5",}}>
+        <View style={{ borderRadius: 5, borderColor: "white", margin: 40, borderWidth: 3, backgroundColor: "#CAE9F5",}}>
           <View style={{ padding: 10 }}>
             <TextInput
               style={{ height: 40, borderWidth: 1, width: "100%", backgroundColor: "white", borderRadius: 5, borderColor: "grey", padding: 5}}
@@ -383,6 +383,8 @@ const styles = StyleSheet.create({
     width: "50%",
     borderRadius: 10,
     backgroundColor: "white",
+    borderColor: "#CAE9F5",
+    borderWidth: 3,
     padding: 12,
     margin: 5,
   },

@@ -206,7 +206,7 @@ class Profile extends Component{
   render(){
     return (
       <>
-      <View style={{backgroundColor: 'lightblue'}}>
+      <View style={{backgroundColor: 'lightblue', flex: 1, padding: 30}}>
       <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
         {this.state.profile_image ? (
           <Image
@@ -214,7 +214,7 @@ class Profile extends Component{
             style={{ width: 100, height: 100 }}
           />
         ) : (
-          <Text>No profile image</Text>
+          <Text>Insert image to update profile picture</Text>
         )}
         <View style={[styles.btnContainer]}>
         <TouchableOpacity onPress={() => this._uploadProfilePicture(this.state.user_id)}>
@@ -223,8 +223,7 @@ class Profile extends Component{
         </View>
       </View>
 
-      <View style={{ flexDirection: "row", justifyContent: "center" }}>
-          <View style={styles.box}>
+      <View style={{ flexDirection: "row", justifyContent: "center", marginTop: 50  }}>
             <View style={styles.formContainer}>
               <View style={styles.email}>
                 <View style={styles.user_id}>
@@ -282,16 +281,16 @@ class Profile extends Component{
                 </>
               </View>
 
-              <View style={styles.signupBtn}>
+              <View style={styles.updateBtn}>
                 <TouchableOpacity onPress={this._onUpdateInfo}>
-                  <View style={[styles.button, { width: "100%", height: "100%" }]}>
+                  <View style={[styles.button, { width: "100%" }]}>
                     <Text style={styles.buttonText}>Update</Text>
                   </View>
                 </TouchableOpacity>
               </View>
               <View style={{ flexDirection: "row", justifyContent: "center" }}>
                 <TouchableOpacity
-                  style={[styles.btnContainer, {width:"35%"}]}
+                  style={[styles.btnContainer, {width:"100%"}]}
                   onPress={this._onLogOutButton}>
                   <Text style={styles.buttonText}>log out</Text>
                 </TouchableOpacity>
@@ -303,7 +302,7 @@ class Profile extends Component{
             </View>
           </View>
           </View>
-        </View></> 
+          </> 
     );
   }
 }
@@ -321,7 +320,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#222',
     width: "50%",
     borderRadius: 10,
-    padding: 8,
     margin: 20,
   },
   text: {
@@ -374,11 +372,10 @@ const styles = StyleSheet.create({
   password:{
     marginBottom: 30
   },
-  signupBtn:{
+  updateBtn:{
       alignSelf: 'center',
       alignContent: 'center',
       backgroundColor: 'teal',
-      width: '50%',
       borderRadius: 20,
       borderWidth: 1.3,
       borderColor: "grey",

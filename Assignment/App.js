@@ -1,6 +1,7 @@
   import * as React from 'react';
   import { NavigationContainer } from '@react-navigation/native';
   import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+  import { Ionicons } from '@expo/vector-icons';
   import Chats from './screens/chats';
   import Profile from './screens/profile'
   import Users from './screens/users'
@@ -24,16 +25,39 @@
     function MainTabs() {
       return (
         <Tab.Navigator>
-          <Tab.Screen name="Chats" options={{ headerShown: false }}>
+          <Tab.Screen name="Chats" options={{
+            headerShown: false,
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons name="chatbubbles-outline" size={size} color={color} />
+            ),
+          }}>
             {() => <Chats token={token} />}
           </Tab.Screen>
-          <Tab.Screen name="Contacts" options={{ headerShown: false }}>
+          <Tab.Screen name="Contacts" options={{
+            headerShown: false,
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons name="people-outline" size={size} color={color} />
+            ),
+          }}
+        >
             {() => <Contact token={token} />}
           </Tab.Screen>
-          <Tab.Screen name="Users" options={{ headerShown: false }}>
+          <Tab.Screen name="Users" options={{
+            headerShown: false,
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons name="person-outline" size={size} color={color} />
+            ),
+          }}
+        >
             {(props) => <Users {...props} token={token} />}
           </Tab.Screen>
-          <Tab.Screen name="Profile" options={{ headerShown: false }}>
+          <Tab.Screen name="Profile" options={{
+            headerShown: false,
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons name="person-circle-outline" size={size} color={color} />
+            ),
+          }}
+        >
             {(props) => <Profile {...props} token={token} />}
           </Tab.Screen>
         </Tab.Navigator>

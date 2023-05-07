@@ -97,7 +97,7 @@ class Chats extends Component {
     const { chatName } = this.state;
     // Check if chatName is empty
     if (!chatName.trim()) {
-      this.setState({ error: 'Please enter a name for the chat.' });
+      this.setState({ error: 'Please enter a name to create a new chat.' });
       return;
     }
 
@@ -138,7 +138,7 @@ class Chats extends Component {
     const { chatID, chatName } = this.state;
     // check for empty inputs in ChatName
     if (!chatName.trim()) {
-      this.setState({ error: 'Please enter a name for the chat.' });
+      this.setState({ error: 'Please enter a new name for the chat.' });
       return;
     }
   
@@ -223,7 +223,7 @@ class Chats extends Component {
     const { chatID, user_id } = this.state;
     // check for empty input in user_id
     if (!user_id.trim()) {
-      this.setState({ error: 'Please enter a user ID for the chat.' });
+      this.setState({ error: 'Please enter a message ID to delete.' });
       return;
     }
   
@@ -309,7 +309,7 @@ class Chats extends Component {
     const { chatID, message_id, message } = this.state;
     // check for empty inputs in message
     if (!message.trim()) {
-      this.setState({ error: 'Please enter a message.' });
+      this.setState({ error: 'Please enter message ID to update.' });
       return;
     }
   
@@ -446,7 +446,7 @@ class Chats extends Component {
               <TouchableOpacity
                 style={styles.btnContainer}
                 onPress={this._onUpdateChatButton}>
-                <Text style={styles.buttonText}>Update</Text>
+                <Text style={styles.buttonText}>Update Chat</Text>
               </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.btnContainer}
@@ -474,7 +474,7 @@ class Chats extends Component {
                 <TouchableOpacity
                   style={styles.btnContainer}
                   onPress={this._onUpdateMessage}>
-                  <Text style={styles.buttonText}>Update Message</Text>
+                  <Text style={styles.buttonText}>Update</Text>
                 </TouchableOpacity>
               </View>
           </>
@@ -576,7 +576,7 @@ class Chats extends Component {
               <TouchableOpacity
                 style={styles.btnContainer}
                 onPress={this._onUpdateChatButton}>
-                <Text style={styles.buttonText}>Update</Text>
+                <Text style={styles.buttonText}>Update Chat Name</Text>
               </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.btnContainer}
@@ -638,7 +638,7 @@ const styles = StyleSheet.create({
     backgroundColor: "lightblue",
   },
   chatContainer: {
-    borderWidth: 1,
+    borderWidth: 3,
     borderColor: "#CAE9F5",
     borderRadius: 5,
     padding: 10,
@@ -659,7 +659,7 @@ const styles = StyleSheet.create({
   chatDataContainer: {
     width: 360,
     padding: 10,
-    borderWidth: 1,
+    borderWidth: 3,
     borderColor: 'white',
     borderRadius: 5,
     marginBottom: 10,
@@ -708,7 +708,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     alignContent: 'center',
     backgroundColor: '#222',
-    width: "40%",
+    width: "35%",
     borderRadius: 10,
     padding: 12,
     margin: 5,

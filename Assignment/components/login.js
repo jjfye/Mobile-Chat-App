@@ -33,7 +33,7 @@ export default class LoginScreen extends Component {
     
         const PASSWORD_REGEX = new RegExp("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$")
         if(!PASSWORD_REGEX.test(this.state.password)){
-            this.setState({error: "Password isn't strong enough (One upper, one lower, one special, one number, at least 8 characters long)"})
+            this.setState({error: "Invalid email or password"})
             return;
         }
     

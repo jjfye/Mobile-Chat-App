@@ -126,7 +126,7 @@ class Users extends Component {
     const { first_name, last_name, email, rendered_user_id} = this.state;
     return (
       <View style={styles.container}>
-        <View style = {{borderRadius: 5, borderWidth: 0.85, borderColor: "white", padding: 10, backgroundColor: "#CAE9F5",}}>
+        <View style = {{borderRadius: 5, borderWidth: 3, borderColor: "white", padding: 10, backgroundColor: "#CAE9F5",}}>
           
           <TextInput
             style={{ height: 40, borderWidth: 1, width: "100%", backgroundColor: "white", borderRadius: 5, borderColor: "grey", padding: 5}}
@@ -201,8 +201,8 @@ const styles = StyleSheet.create({
     dataContainer: {
         width: 250,
         padding: 10,
-        borderWidth: 1,
-        borderColor: 'lightblue',
+        borderWidth: 3,
+        borderColor: "#CAE9F5",
         borderRadius: 5,
         marginTop: 10,
         backgroundColor: "white",
@@ -210,8 +210,8 @@ const styles = StyleSheet.create({
       resultContainer: {
         marginTop: 10,
         padding: 10,
-        borderWidth: 1,
-        borderColor: 'lightblue',
+        borderWidth: 3,
+        borderColor: "#CAE9F5",
         backgroundColor: "white",
         borderRadius: 5,
       },
